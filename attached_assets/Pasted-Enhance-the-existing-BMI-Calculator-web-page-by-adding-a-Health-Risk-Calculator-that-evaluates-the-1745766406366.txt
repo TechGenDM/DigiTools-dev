@@ -1,0 +1,56 @@
+Enhance the existing "BMI Calculator" web page by adding a Health Risk Calculator that evaluates the potential health risks based on the BMI category.
+After calculating the BMI and displaying the corresponding BMI Category (Underweight, Normal weight, Overweight, Obese), display an additional section with:
+
+Health Risk Level based on BMI category (Low, Medium, High).
+
+Health Risk Evaluation:
+
+Underweight (BMI < 18.5):
+Risk Level: Low to Medium (Risk of malnutrition, osteoporosis, etc.)
+
+Normal weight (BMI 18.5 - 24.9):
+Risk Level: Low (Healthy weight range, minimal health risks)
+
+Overweight (BMI 25 - 29.9):
+Risk Level: Medium (Increased risk of heart disease, type 2 diabetes, etc.)
+
+Obese (BMI ≥ 30):
+Risk Level: High (High risk of heart disease, high blood pressure, and other serious health conditions)
+
+Requirements:
+
+After the user sees their BMI Category, display the Health Risk Level directly below the BMI category.
+
+For each BMI category, provide a short explanation of the potential health risks:
+
+For Underweight: "Underweight individuals may have a higher risk of nutrient deficiencies and weaker immune systems."
+
+For Normal weight: "A normal BMI indicates a lower risk for heart disease and other health issues."
+
+For Overweight: "Being overweight can increase the risk of chronic diseases such as heart disease and diabetes."
+
+For Obese: "Obesity is associated with a high risk of serious conditions like heart disease, stroke, and hypertension."
+
+Display the Health Risk Level in a clear, easy-to-read format with soft background colors (green for low, yellow for medium, red for high).
+
+Ensure the overall design is clean and user-friendly, with separate sections for BMI and Health Risk.
+
+Optionally, include a link to more information (e.g., lifestyle changes for reducing health risks).
+
+Design Requirements:
+
+Keep the risk levels simple, visually distinguishable, and well-organized.
+
+Use icons or color-coded labels (green for low, yellow for medium, red for high) to visually represent risk.
+
+Use clear, concise language to describe each risk level.
+
+Optional Features:
+
+Allow users to hover or click on the risk level for additional details or health advice.
+
+Optionally include a "See Doctor" recommendation for high-risk individuals.
+
+Tech Stack:
+
+HTML, CSS (TailwindCSS recommended for styling), and Vanilla JavaScript.

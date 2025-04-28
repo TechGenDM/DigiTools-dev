@@ -1,0 +1,81 @@
+ Prompt for Date Calculator:
+Create a "Date Calculator" web page with a clean and modern design. The page should allow users to perform two types of date calculations:
+
+Find the difference between two dates (in years, months, and days).
+
+Add or subtract days, weeks, or months to a selected date.
+
+Requirements:
+
+Responsive design for mobile and desktop.
+
+Two main sections:
+
+Date Difference Calculator (Input: Start Date and End Date)
+
+Add/Subtract Date Calculator (Input: Base Date, Number, and Unit - Days/Weeks/Months)
+
+Display results clearly with labels like "Difference: 2 Years, 3 Months, 10 Days."
+
+Real-time calculations once inputs are filled.
+
+"Reset" button to clear all fields and outputs.
+
+Light, minimalist theme (TailwindCSS if possible).
+
+Friendly heading like "Easy Date Calculator."
+
+Validation: Ensure dates are valid and show an error if not.
+
+Optional Extras:
+
+Show the day of the week (e.g., Monday, Tuesday) for calculated dates.
+
+Animate the results appearing smoothly.
+
+Allow easy toggling between "Date Difference" and "Add/Subtract Date" modes.
+
+🛒 Prompt for Discount Calculator:
+Build a "Discount Calculator" web page with a simple, attractive layout. The page should allow users to input:
+
+Original Price
+
+Discount Percentage (%)
+
+and instantly calculate and display:
+
+Discount Amount
+
+Final Price after Discount
+
+Requirements:
+
+Responsive, clean, and minimal design.
+
+Real-time calculation as the user types.
+
+Clearly show:
+
+"You save: $X"
+
+"Final price: $Y"
+
+Use soft colors (green or blue tones for positive savings).
+
+"Reset" button to clear all fields and results.
+
+Include a header like "Quick Discount Calculator."
+
+Validation: No negative numbers, no missing fields.
+
+Optional input for "Tax after discount" to show the final price including tax.
+
+Format numbers with commas and currency symbols.
+
+Technology stack: HTML, CSS (TailwindCSS preferred), and Vanilla JavaScript.
+
+Optional Extras:
+
+Animate the "You Save" amount increasing.
+
+Include a small explanation: "Final price = Original Price - (Original Price × Discount %)."
