@@ -4,7 +4,7 @@ A modern, high-performance web application featuring a suite of digital tools de
 
 ## 🚀 Live Demo
 Check out the live application here:  
-**[https://digitools-dev.netlify.app/](https://digitools-dev.netlify.app/)**
+**[https://digitools-dev.netlify.app/](https://digitools.netlify.app/)**
 
 ## ✨ Features
 - **Modern UI/UX:** Built with Tailwind CSS for a sleek, responsive design.
