@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 
 const GSTCalculator: React.FC = () => {
   // State for "Add GST" section
@@ -83,7 +84,13 @@ const GSTCalculator: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <SEOHead
+        title="GST Calculator – Add & Remove GST Instantly"
+        description="Calculate GST in seconds. Add or remove GST from any amount with support for 5%, 12%, 18%, and 28% GST rates. Free, fast, and accurate."
+        path="/gst-calculator"
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
           GST Calculator
@@ -252,6 +259,7 @@ const GSTCalculator: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

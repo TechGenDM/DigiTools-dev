@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 
 // Tool card component
 const ToolCard: React.FC<{
@@ -36,7 +37,13 @@ const ToolCard: React.FC<{
 
 function MoreTools() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <SEOHead
+        title="More Calculation Tools"
+        description="Explore our collection of free calculation tools: GST, Loan EMI, SIP, BMI, Unit Converter, Discount, Profit/Loss, and more."
+        path="/more-tools"
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-8 px-4">
         <h1 className="text-2xl md:text-4xl font-bold text-[#4338ca] mb-2">
           More Calculation Tools
@@ -114,6 +121,7 @@ function MoreTools() {
         </Link>
       </div>
     </div>
+    </>
   );
 }
 

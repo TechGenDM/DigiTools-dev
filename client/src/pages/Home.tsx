@@ -4,12 +4,19 @@ import PercentOfCalculator from "@/components/PercentOfCalculator";
 import WhatPercentCalculator from "@/components/WhatPercentCalculator";
 import PercentChangeCalculator from "@/components/PercentChangeCalculator";
 import Examples from "@/components/Examples";
+import SEOHead from "@/components/SEOHead";
 
 function Home() {
   const [activeTab, setActiveTab] = useState<string>("percent-of");
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <SEOHead
+        title="Percentage Calculator – Fast, Free & Easy"
+        description="Calculate percentages instantly with real-time results. Find percent of a value, what percentage one number is of another, and percentage increases or decreases."
+        path="/"
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
           Percentage Calculator
@@ -29,6 +36,7 @@ function Home() {
 
       <Examples />
     </div>
+    </>
   );
 }
 

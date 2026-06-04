@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 
 const BMICalculator: React.FC = () => {
   // Unit selection state
@@ -201,7 +202,13 @@ const BMICalculator: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <SEOHead
+        title="BMI Calculator – Check Your Body Mass Index"
+        description="Calculate your Body Mass Index and check if your weight is in a healthy range. Supports metric and imperial units with health risk assessment."
+        path="/bmi-calculator"
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
           BMI Calculator
@@ -466,6 +473,7 @@ const BMICalculator: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

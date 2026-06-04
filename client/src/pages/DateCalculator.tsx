@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { format, differenceInYears, differenceInMonths, differenceInDays, addMonths, isValid } from "date-fns";
+import SEOHead from "@/components/SEOHead";
 
 // Interface for age calculation result
 interface AgeResult {
@@ -174,7 +175,13 @@ const DateCalculator: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <SEOHead
+        title="Age & Date Calculator"
+        description="Calculate the difference between dates, find your age, your loved one's age, or your pet's age with precision. Free and instant."
+        path="/date-calculator"
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
           Age Calculator
@@ -520,6 +527,7 @@ const DateCalculator: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

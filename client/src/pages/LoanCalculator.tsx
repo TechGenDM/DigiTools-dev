@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 
 const LoanCalculator: React.FC = () => {
   // State for input values
@@ -96,7 +97,13 @@ const LoanCalculator: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <SEOHead
+        title="Loan & EMI Calculator"
+        description="Calculate your monthly EMI, total payment, and total interest on any loan. Supports years and months tenure. Free and instant."
+        path="/loan-calculator"
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
           Loan &amp; EMI Calculator
@@ -275,6 +282,7 @@ const LoanCalculator: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

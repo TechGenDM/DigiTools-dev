@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-10">
+    <nav className="bg-white shadow-sm sticky top-0 z-10" aria-label="Main navigation">
       <div className="container mx-auto px-4 py-3 max-w-4xl">
         <div className="flex justify-between items-center">
           <Link href="/">
@@ -42,6 +42,7 @@ const Navbar: React.FC = () => {
                       ? "bg-indigo-50 text-[#4338ca]"
                       : "text-slate-600 hover:bg-indigo-50 hover:text-[#4338ca]"
                   }`}
+                  {...(location === link.path ? { "aria-current": "page" as const } : {})}
                 >
                   <i className={`${link.icon} mr-1`}></i>
                   {link.label}
@@ -55,6 +56,8 @@ const Navbar: React.FC = () => {
             <button 
               className="p-2 rounded-md text-slate-600 hover:bg-indigo-50 hover:text-[#4338ca] focus:outline-none"
               onClick={toggleMobileMenu}
+              aria-expanded={mobileMenuOpen}
+              aria-label="Toggle navigation menu"
             >
               <i className={`${mobileMenuOpen ? 'ri-close-line' : 'ri-menu-line'} text-xl`}></i>
             </button>

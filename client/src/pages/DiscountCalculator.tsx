@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 
 const DiscountCalculator: React.FC = () => {
   // State for input values
@@ -99,7 +100,13 @@ const DiscountCalculator: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <SEOHead
+        title="Instant Discount Calculator"
+        description="Calculate discounts and sale prices instantly. See how much you save with optional tax calculation. Free and easy to use."
+        path="/discount-calculator"
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
           Instant Discount Calculator
@@ -270,6 +277,7 @@ const DiscountCalculator: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 
 const SIPCalculator: React.FC = () => {
   // State for form inputs
@@ -125,7 +126,13 @@ const SIPCalculator: React.FC = () => {
   const pieChart = calculatePieChartSegments();
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <SEOHead
+        title="SIP Calculator – Plan Your Investments"
+        description="Calculate how your systematic investments can grow over time with the power of compounding. Free SIP maturity value calculator."
+        path="/sip-calculator"
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
           Easy SIP Calculator
@@ -380,6 +387,7 @@ const SIPCalculator: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

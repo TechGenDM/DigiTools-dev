@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 
 const ProfitLossCalculator: React.FC = () => {
   // State for input values
@@ -81,7 +82,13 @@ const ProfitLossCalculator: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <SEOHead
+        title="Profit & Loss Calculator"
+        description="Calculate profit or loss amount and percentage based on cost price and selling price. Free, instant, and easy to use."
+        path="/profit-loss-calculator"
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
           Profit and Loss Calculator
@@ -237,6 +244,7 @@ const ProfitLossCalculator: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
