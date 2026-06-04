@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 
 const WhatPercentCalculator: React.FC = () => {
-  const [xValue, setXValue] = useState<string>("");
-  const [yValue, setYValue] = useState<string>("");
+  const [value1, setValue1] = useState<string>("");
+  const [value2, setValue2] = useState<string>("");
   const [result, setResult] = useState<number>(0);
   const [showResult, setShowResult] = useState<boolean>(false);
 
   useEffect(() => {
     calculateWhatPercent();
-  }, [xValue, yValue]);
+  }, [value1, value2]);
 
   const calculateWhatPercent = () => {
-    const x = parseFloat(xValue) || 0;
-    const y = parseFloat(yValue) || 0;
+    const v1 = parseFloat(value1) || 0;
+    const v2 = parseFloat(value2) || 0;
 
-    if (x && y) {
-      setResult((x / y) * 100);
+    if (v1 && v2 !== 0) {
+      setResult((v1 / v2) * 100);
       setShowResult(true);
     } else {
       setResult(0);
@@ -23,58 +23,51 @@ const WhatPercentCalculator: React.FC = () => {
     }
   };
 
-  const handleXValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setXValue(e.target.value);
-  };
-
-  const handleYValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setYValue(e.target.value);
-  };
-
   return (
-    <div id="calculator-x-is-what-percent" className="calculator-card bg-white rounded-lg shadow-card p-6 mb-6">
-      <h2 className="font-poppins text-xl font-semibold mb-4">What percentage is X of Y?</h2>
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div id="calculator-what-percent" className="relative p-6 z-10">
+      <h2 className="font-display text-2xl font-semibold mb-6 text-slate-900 dark:text-white text-center">What % is X of Y?</h2>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="form-group">
-            <label htmlFor="what-x-value" className="block text-sm font-medium text-slate-700 mb-1">
-              X Value
+            <label htmlFor="value-1" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Value (X)
             </label>
             <input
               type="number"
-              id="what-x-value"
-              className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="e.g. 30"
-              value={xValue}
-              onChange={handleXValueChange}
+              id="value-1"
+              className="glass-input w-full px-4 py-3 bg-transparent"
+              placeholder="e.g. 50"
+              value={value1}
+              onChange={(e) => setValue1(e.target.value)}
             />
           </div>
           <div className="form-group">
-            <label htmlFor="what-y-value" className="block text-sm font-medium text-slate-700 mb-1">
-              Y Value
+            <label htmlFor="value-2" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              Total Value (Y)
             </label>
             <input
               type="number"
-              id="what-y-value"
-              className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="e.g. 150"
-              value={yValue}
-              onChange={handleYValueChange}
+              id="value-2"
+              className="glass-input w-full px-4 py-3 bg-transparent"
+              placeholder="e.g. 200"
+              value={value2}
+              onChange={(e) => setValue2(e.target.value)}
             />
           </div>
         </div>
-        <div className="result-box bg-slate-50 p-4 rounded-md">
-          <p className="text-sm text-slate-500 mb-1">Result:</p>
-          <div className="calculation-result font-medium text-lg" id="what-percent-result">
-            <span className="text-[#4338ca] font-semibold">
-              {result.toLocaleString('en-US', {maximumFractionDigits: 2})}%
-            </span>
+        
+        <div className={`result-box mt-8 ${showResult ? 'opacity-100' : 'opacity-50'}`}>
+          <div className="calculation-result text-center">
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-2 font-light tracking-wide uppercase">Result</p>
+            <div className="font-display font-bold text-4xl text-slate-900 dark:text-white drop-shadow-md">
+              {result.toLocaleString('en-US', {maximumFractionDigits: 4})}<span className="text-primary text-2xl ml-1">%</span>
+            </div>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-3 font-light">
+              {showResult 
+                ? <><span className="text-primary font-medium">{value1}</span> is <span className="text-primary font-medium">{result.toLocaleString('en-US', {maximumFractionDigits: 4})}%</span> of <span className="text-primary font-medium">{value2}</span></>
+                : "Enter values to see the calculation"}
+            </p>
           </div>
-          <p className="text-xs text-slate-400 mt-2" id="what-percent-equation">
-            {showResult 
-              ? `${xValue} is ${result.toLocaleString('en-US', {maximumFractionDigits: 2})}% of ${yValue}`
-              : "Enter values to see the calculation"}
-          </p>
         </div>
       </div>
     </div>

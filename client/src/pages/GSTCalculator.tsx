@@ -3,85 +3,54 @@ import { Link } from "wouter";
 import SEOHead from "@/components/SEOHead";
 
 const GSTCalculator: React.FC = () => {
-  // State for "Add GST" section
-  const [originalAmount, setOriginalAmount] = useState<string>("");
-  const [addGstRate, setAddGstRate] = useState<string>("18");
-  const [addGstAmount, setAddGstAmount] = useState<number>(0);
-  const [addTotalAmount, setAddTotalAmount] = useState<number>(0);
-  const [showAddResult, setShowAddResult] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<'add' | 'remove'>('add');
+  
+  // State for Add GST
+  const [addAmount, setAddAmount] = useState<string>("");
+  const [addRate, setAddRate] = useState<number>(18);
+  const [addResult, setAddResult] = useState({ netAmount: 0, gstAmount: 0, totalAmount: 0, cgst: 0, sgst: 0 });
 
-  // State for "Remove GST" section
-  const [inclusiveAmount, setInclusiveAmount] = useState<string>("");
-  const [removeGstRate, setRemoveGstRate] = useState<string>("18");
-  const [removeGstAmount, setRemoveGstAmount] = useState<number>(0);
-  const [baseAmount, setBaseAmount] = useState<number>(0);
-  const [showRemoveResult, setShowRemoveResult] = useState<boolean>(false);
+  // State for Remove GST
+  const [removeAmount, setRemoveAmount] = useState<string>("");
+  const [removeRate, setRemoveRate] = useState<number>(18);
+  const [removeResult, setRemoveResult] = useState({ totalAmount: 0, gstAmount: 0, netAmount: 0, cgst: 0, sgst: 0 });
 
-  // Common GST rates
-  const gstRates = [
-    { value: "5", label: "5%" },
-    { value: "12", label: "12%" },
-    { value: "18", label: "18%" },
-    { value: "28", label: "28%" },
-  ];
+  const gstRates = [5, 12, 18, 28];
 
-  // Calculate Add GST
   useEffect(() => {
-    calculateAddGST();
-  }, [originalAmount, addGstRate]);
+    // Calculate Add GST
+    const netAmt = parseFloat(addAmount) || 0;
+    if (netAmt > 0) {
+      const gstAmt = (netAmt * addRate) / 100;
+      setAddResult({
+        netAmount: netAmt,
+        gstAmount: gstAmt,
+        totalAmount: netAmt + gstAmt,
+        cgst: gstAmt / 2,
+        sgst: gstAmt / 2
+      });
+    } else {
+      setAddResult({ netAmount: 0, gstAmount: 0, totalAmount: 0, cgst: 0, sgst: 0 });
+    }
+  }, [addAmount, addRate]);
 
-  // Calculate Remove GST
   useEffect(() => {
-    calculateRemoveGST();
-  }, [inclusiveAmount, removeGstRate]);
-
-  const calculateAddGST = () => {
-    const amount = parseFloat(originalAmount) || 0;
-    const rate = parseFloat(addGstRate) || 0;
-
-    if (amount && rate) {
-      const gstAmount = (amount * rate) / 100;
-      const total = amount + gstAmount;
-      
-      setAddGstAmount(gstAmount);
-      setAddTotalAmount(total);
-      setShowAddResult(true);
+    // Calculate Remove GST
+    const totalAmt = parseFloat(removeAmount) || 0;
+    if (totalAmt > 0) {
+      const netAmt = (totalAmt * 100) / (100 + removeRate);
+      const gstAmt = totalAmt - netAmt;
+      setRemoveResult({
+        totalAmount: totalAmt,
+        netAmount: netAmt,
+        gstAmount: gstAmt,
+        cgst: gstAmt / 2,
+        sgst: gstAmt / 2
+      });
     } else {
-      setAddGstAmount(0);
-      setAddTotalAmount(0);
-      setShowAddResult(false);
+      setRemoveResult({ totalAmount: 0, netAmount: 0, gstAmount: 0, cgst: 0, sgst: 0 });
     }
-  };
-
-  const calculateRemoveGST = () => {
-    const amount = parseFloat(inclusiveAmount) || 0;
-    const rate = parseFloat(removeGstRate) || 0;
-
-    if (amount && rate) {
-      const baseAmt = amount / (1 + rate / 100);
-      const gstAmt = amount - baseAmt;
-      
-      setRemoveGstAmount(gstAmt);
-      setBaseAmount(baseAmt);
-      setShowRemoveResult(true);
-    } else {
-      setRemoveGstAmount(0);
-      setBaseAmount(0);
-      setShowRemoveResult(false);
-    }
-  };
-
-  const resetAddGST = () => {
-    setOriginalAmount("");
-    setAddGstRate("18");
-    setShowAddResult(false);
-  };
-
-  const resetRemoveGST = () => {
-    setInclusiveAmount("");
-    setRemoveGstRate("18");
-    setShowRemoveResult(false);
-  };
+  }, [removeAmount, removeRate]);
 
   return (
     <>
@@ -90,175 +59,192 @@ const GSTCalculator: React.FC = () => {
         description="Calculate GST in seconds. Add or remove GST from any amount with support for 5%, 12%, 18%, and 28% GST rates. Free, fast, and accurate."
         path="/gst-calculator"
       />
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <header className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
-          GST Calculator
-        </h1>
-        <p className="text-slate-600 max-w-xl mx-auto">
-          Calculate GST in seconds - add or remove GST with real-time results.
-        </p>
-      </header>
-
-      {/* Breadcrumb Navigation */}
-      <div className="flex items-center text-sm mb-6 bg-slate-50 p-2 rounded-md">
-        <Link href="/">
-          <div className="text-[#4338ca] hover:underline cursor-pointer">Home</div>
-        </Link>
-        <i className="ri-arrow-right-s-line mx-2 text-slate-400"></i>
-        <span className="text-slate-700">GST Calculator</span>
-      </div>
-
-      {/* Add GST Section */}
-      <div className="calculator-card bg-white rounded-lg shadow-card p-6 mb-6">
-        <h2 className="font-poppins text-xl font-semibold mb-4 flex items-center">
-          <i className="ri-add-circle-line mr-2 text-[#4338ca]"></i>
-          Add GST to Amount
-        </h2>
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="form-group">
-              <label htmlFor="original-amount" className="block text-sm font-medium text-slate-700 mb-1">
-                Original Amount
-              </label>
-              <input
-                type="number"
-                id="original-amount"
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="e.g. 100"
-                value={originalAmount}
-                onChange={(e) => setOriginalAmount(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="add-gst-rate" className="block text-sm font-medium text-slate-700 mb-1">
-                GST Rate (%)
-              </label>
-              <select
-                id="add-gst-rate"
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                value={addGstRate}
-                onChange={(e) => setAddGstRate(e.target.value)}
-              >
-                {gstRates.map((rate) => (
-                  <option key={`add-${rate.value}`} value={rate.value}>
-                    {rate.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <div className="container mx-auto px-4 max-w-4xl relative z-10">
+        <header className="text-center mb-12 animate-slide-up">
+          <div className="inline-flex items-center justify-center p-3 mb-4 rounded-full bg-primary/20 text-primary">
+            <i className="ri-receipt-line text-3xl"></i>
           </div>
-          
-          <div className="result-box bg-slate-50 p-4 rounded-md">
-            <p className="text-sm text-slate-500 mb-1">Results:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
-              <div>
-                <p className="text-xs text-slate-400">GST Amount:</p>
-                <p className="text-[#4338ca] font-semibold">
-                  {addGstAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-400">Total Amount (with GST):</p>
-                <p className="text-[#4338ca] font-semibold">
-                  {addTotalAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}
-                </p>
-              </div>
-            </div>
-            
-            <p className="text-xs text-slate-400 mt-2">
-              {showAddResult 
-                ? `If you enter ${originalAmount} with ${addGstRate}% GST, you get GST: ${addGstAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})} and Total: ${addTotalAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}`
-                : "Enter values to see the calculation"}
-            </p>
-          </div>
-          
-          <div className="flex justify-end">
-            <button 
-              onClick={resetAddGST}
-              className="px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 rounded transition-colors"
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">
+            GST <span className="text-gradient">Calculator</span>
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400 font-light max-w-2xl mx-auto text-lg">
+            Add or remove Goods and Services Tax instantly with absolute precision.
+          </p>
+        </header>
+
+        <div className="glass-panel p-6 md:p-8 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <div className="segmented-control mb-8">
+            <div 
+              className={`segmented-tab ${activeTab === 'add' ? 'active' : ''}`}
+              onClick={() => setActiveTab('add')}
+              role="button"
+              tabIndex={0}
             >
-              Reset
-            </button>
+              Add GST (+Tax)
+            </div>
+            <div 
+              className={`segmented-tab ${activeTab === 'remove' ? 'active' : ''}`}
+              onClick={() => setActiveTab('remove')}
+              role="button"
+              tabIndex={0}
+            >
+              Remove GST (-Tax)
+            </div>
+          </div>
+
+          <div className="relative min-h-[400px]">
+            {activeTab === 'add' ? (
+              <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="form-group">
+                    <label htmlFor="add-amount" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      Net Amount (Before Tax)
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
+                        ₹
+                      </div>
+                      <input
+                        type="number"
+                        id="add-amount"
+                        className="glass-input w-full pl-8 px-4 py-3 bg-transparent"
+                        placeholder="e.g. 1000"
+                        value={addAmount}
+                        onChange={(e) => setAddAmount(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="add-rate" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      GST Rate
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="add-rate"
+                        className="glass-input w-full px-4 py-3 bg-black/5 dark:bg-white/5 appearance-none text-slate-900 dark:text-white text-slate-900 dark:text-white focus:bg-[#1a1b26]"
+                        value={addRate}
+                        onChange={(e) => setAddRate(Number(e.target.value))}
+                      >
+                        {gstRates.map(rate => (
+                          <option key={`add-${rate}`} value={rate} className="text-black">{rate}%</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`result-box mt-8 ${addAmount ? 'opacity-100' : 'opacity-50'}`}>
+                  <div className="calculation-result">
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 font-light tracking-wide uppercase text-center">Calculation Result</p>
+                    
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="text-slate-400">Net Amount:</span>
+                        <span className="font-medium text-white">₹ {addResult.netAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="text-slate-400">GST Amount ({addRate}%):</span>
+                        <span className="font-medium text-primary">₹ {addResult.gstAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-black/10 dark:border-white/10 pl-4 text-sm">
+                        <span className="text-slate-500">CGST ({addRate/2}%):</span>
+                        <span className="text-slate-300">₹ {addResult.cgst.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-black/10 dark:border-white/10 pl-4 text-sm">
+                        <span className="text-slate-500">SGST/UTGST ({addRate/2}%):</span>
+                        <span className="text-slate-300">₹ {addResult.sgst.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center pt-4">
+                        <span className="text-lg font-medium text-white">Total Amount:</span>
+                        <span className="text-3xl font-display font-bold text-slate-900 dark:text-white drop-shadow-md">₹ {addResult.totalAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="form-group">
+                    <label htmlFor="remove-amount" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      Total Amount (Including Tax)
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
+                        ₹
+                      </div>
+                      <input
+                        type="number"
+                        id="remove-amount"
+                        className="glass-input w-full pl-8 px-4 py-3 bg-transparent"
+                        placeholder="e.g. 1180"
+                        value={removeAmount}
+                        onChange={(e) => setRemoveAmount(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="remove-rate" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                      GST Rate Included
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="remove-rate"
+                        className="glass-input w-full px-4 py-3 bg-black/5 dark:bg-white/5 appearance-none text-slate-900 dark:text-white text-slate-900 dark:text-white focus:bg-[#1a1b26]"
+                        value={removeRate}
+                        onChange={(e) => setRemoveRate(Number(e.target.value))}
+                      >
+                        {gstRates.map(rate => (
+                          <option key={`remove-${rate}`} value={rate} className="text-black">{rate}%</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`result-box mt-8 ${removeAmount ? 'opacity-100' : 'opacity-50'}`}>
+                  <div className="calculation-result">
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 font-light tracking-wide uppercase text-center">Calculation Result</p>
+                    
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="text-slate-400">Total Amount:</span>
+                        <span className="font-medium text-white">₹ {removeResult.totalAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-white/10">
+                        <span className="text-slate-400">GST Removed ({removeRate}%):</span>
+                        <span className="font-medium text-rose-400">-₹ {removeResult.gstAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-black/10 dark:border-white/10 pl-4 text-sm">
+                        <span className="text-slate-500">CGST ({removeRate/2}%):</span>
+                        <span className="text-slate-300">₹ {removeResult.cgst.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center py-2 border-b border-black/10 dark:border-white/10 pl-4 text-sm">
+                        <span className="text-slate-500">SGST/UTGST ({removeRate/2}%):</span>
+                        <span className="text-slate-300">₹ {removeResult.sgst.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center pt-4">
+                        <span className="text-lg font-medium text-white">Net Amount (Pre-Tax):</span>
+                        <span className="text-3xl font-display font-bold text-slate-900 dark:text-white drop-shadow-md">₹ {removeResult.netAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Remove GST Section */}
-      <div className="calculator-card bg-white rounded-lg shadow-card p-6 mb-6">
-        <h2 className="font-poppins text-xl font-semibold mb-4 flex items-center">
-          <i className="ri-subtract-line mr-2 text-[#4338ca]"></i>
-          Remove GST from Amount
-        </h2>
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="form-group">
-              <label htmlFor="inclusive-amount" className="block text-sm font-medium text-slate-700 mb-1">
-                GST-Inclusive Amount
-              </label>
-              <input
-                type="number"
-                id="inclusive-amount"
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="e.g. 118"
-                value={inclusiveAmount}
-                onChange={(e) => setInclusiveAmount(e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="remove-gst-rate" className="block text-sm font-medium text-slate-700 mb-1">
-                GST Rate (%)
-              </label>
-              <select
-                id="remove-gst-rate"
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                value={removeGstRate}
-                onChange={(e) => setRemoveGstRate(e.target.value)}
-              >
-                {gstRates.map((rate) => (
-                  <option key={`remove-${rate.value}`} value={rate.value}>
-                    {rate.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          
-          <div className="result-box bg-slate-50 p-4 rounded-md">
-            <p className="text-sm text-slate-500 mb-1">Results:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
-              <div>
-                <p className="text-xs text-slate-400">GST Amount:</p>
-                <p className="text-[#4338ca] font-semibold">
-                  {removeGstAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-400">Base Amount (excluding GST):</p>
-                <p className="text-[#4338ca] font-semibold">
-                  {baseAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}
-                </p>
-              </div>
-            </div>
-            
-            <p className="text-xs text-slate-400 mt-2">
-              {showRemoveResult 
-                ? `If you enter ${inclusiveAmount} with ${removeGstRate}% GST included, the base amount is ${baseAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})} and GST is ${removeGstAmount.toLocaleString('en-IN', {maximumFractionDigits: 2})}`
-                : "Enter values to see the calculation"}
-            </p>
-          </div>
-          
-          <div className="flex justify-end">
-            <button 
-              onClick={resetRemoveGST}
-              className="px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 rounded transition-colors"
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     </>
   );
 };

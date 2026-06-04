@@ -7,6 +7,7 @@ import Home from "@/pages/Home";
 import NotFound from "@/pages/not-found";
 import Footer from "@/components/Footer";
 import Navbar from "./components/Navbar";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 // Lazy-load calculator pages for code splitting
 const MoreTools = lazy(() => import("@/pages/MoreTools"));
@@ -29,34 +30,43 @@ function PageLoader() {
 
 function App() {
   return (
-    <HelmetProvider>
-      <TooltipProvider>
-        <Toaster />
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          
-          <main className="flex-grow" role="main">
-            <Suspense fallback={<PageLoader />}>
-              <Switch>
-                <Route path="/" component={Home} />
-                <Route path="/more-tools" component={MoreTools} />
-                <Route path="/gst-calculator" component={GSTCalculator} />
-                <Route path="/profit-loss-calculator" component={ProfitLossCalculator} />
-                <Route path="/loan-calculator" component={LoanCalculator} />
-                <Route path="/date-calculator" component={DateCalculator} />
-                <Route path="/discount-calculator" component={DiscountCalculator} />
-                <Route path="/unit-converter" component={UnitConverter} />
-                <Route path="/sip-calculator" component={SIPCalculator} />
-                <Route path="/bmi-calculator" component={BMICalculator} />
-                <Route component={NotFound} />
-              </Switch>
-            </Suspense>
-          </main>
-          
-          <Footer />
-        </div>
-      </TooltipProvider>
-    </HelmetProvider>
+    <ThemeProvider defaultTheme="system" storageKey="digitools-ui-theme">
+      <HelmetProvider>
+        <TooltipProvider>
+          <Toaster />
+          <div className="min-h-screen flex flex-col relative transition-colors duration-500 bg-transparent">
+            {/* Animated Mesh Gradient Background */}
+            <div className="mesh-bg">
+              <div className="mesh-blob blob-1"></div>
+              <div className="mesh-blob blob-2"></div>
+              <div className="mesh-blob blob-3"></div>
+            </div>
+
+            <Navbar />
+            
+            <main className="flex-grow z-10 pt-28 pb-12" role="main">
+              <Suspense fallback={<PageLoader />}>
+                <Switch>
+                  <Route path="/" component={Home} />
+                  <Route path="/more-tools" component={MoreTools} />
+                  <Route path="/gst-calculator" component={GSTCalculator} />
+                  <Route path="/profit-loss-calculator" component={ProfitLossCalculator} />
+                  <Route path="/loan-calculator" component={LoanCalculator} />
+                  <Route path="/date-calculator" component={DateCalculator} />
+                  <Route path="/discount-calculator" component={DiscountCalculator} />
+                  <Route path="/unit-converter" component={UnitConverter} />
+                  <Route path="/sip-calculator" component={SIPCalculator} />
+                  <Route path="/bmi-calculator" component={BMICalculator} />
+                  <Route component={NotFound} />
+                </Switch>
+              </Suspense>
+            </main>
+            
+            <Footer />
+          </div>
+        </TooltipProvider>
+      </HelmetProvider>
+    </ThemeProvider>
   );
 }
 

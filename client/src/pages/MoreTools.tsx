@@ -4,34 +4,31 @@ import SEOHead from "@/components/SEOHead";
 
 // Tool card component
 const ToolCard: React.FC<{
-  icon: string;
   title: string;
   description: string;
-  comingSoon?: boolean;
-  path?: string;
-}> = ({ icon, title, description, comingSoon = false, path = "/" }) => {
+  path: string;
+  icon: string;
+  colorClass: string;
+}> = ({ title, description, path, icon, colorClass }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-slate-100 p-6">
-      <div className="flex items-center mb-3">
-        <i className={`${icon} text-xl text-[#4338ca] mr-2`}></i>
-        <h3 className="font-poppins text-lg font-semibold">{title}</h3>
-        {comingSoon && (
-          <span className="ml-2 text-xs px-2 py-1 bg-amber-100 text-amber-800 rounded-full">
-            Coming Soon
-          </span>
-        )}
-      </div>
-      <p className="text-slate-600 text-sm mb-4">{description}</p>
-      {!comingSoon ? (
-        <Link href={path}>
-          <div className="inline-flex items-center text-[#4338ca] hover:underline cursor-pointer">
-            Use Tool <i className="ri-arrow-right-line ml-1"></i>
+    <Link href={path}>
+      <div className="glass-panel glass-card-hover h-full flex flex-col p-6 cursor-pointer relative overflow-hidden group">
+        <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full blur-2xl opacity-20 transition-all duration-500 group-hover:scale-150 ${colorClass}`}></div>
+        <div className="flex items-center mb-4 relative z-10">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 ${colorClass} bg-opacity-20 backdrop-blur-md border border-white/10`}>
+            <i className={`${icon} text-2xl text-slate-900 dark:text-white drop-shadow-md`}></i>
           </div>
-        </Link>
-      ) : (
-        <span className="text-slate-400 text-sm">Available soon</span>
-      )}
-    </div>
+          <h2 className="text-xl font-display font-semibold text-slate-900 dark:text-white tracking-wide">{title}</h2>
+        </div>
+        <p className="text-slate-600 dark:text-slate-400 text-sm flex-grow relative z-10 font-light leading-relaxed group-hover:text-slate-300 transition-colors">
+          {description}
+        </p>
+        <div className="mt-6 flex items-center text-sm font-medium text-white/50 group-hover:text-primary transition-colors relative z-10">
+          <span>Try now</span>
+          <i className="ri-arrow-right-line ml-1 group-hover:translate-x-1 transition-transform"></i>
+        </div>
+      </div>
+    </Link>
   );
 };
 
@@ -43,84 +40,78 @@ function MoreTools() {
         description="Explore our collection of free calculation tools: GST, Loan EMI, SIP, BMI, Unit Converter, Discount, Profit/Loss, and more."
         path="/more-tools"
       />
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <header className="text-center mb-8 px-4">
-        <h1 className="text-2xl md:text-4xl font-bold text-[#4338ca] mb-2">
-          More Calculation Tools
-        </h1>
-        <p className="text-slate-600 max-w-xl mx-auto text-sm md:text-base">
-          Explore our expanding collection of free calculation tools designed to help with various math and conversion needs.
-        </p>
-      </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {/* Active Tools */}
-        <ToolCard
-          icon="ri-percent-fill"
-          title="Percentage Calculator"
-          description="Calculate percentages, find what percent one number is of another, and determine percentage increases or decreases."
-          path="/"
-        />
-        
-        <ToolCard
-          icon="ri-line-chart-fill"
-          title="Profit and Loss Calculator"
-          description="Calculate profit or loss amount and percentage based on cost price and selling price."
-          path="/profit-loss-calculator"
-        />
-        
-        <ToolCard
-          icon="ri-tax-fill"
-          title="GST Calculator"
-          description="Add or remove GST from amounts. Calculate GST inclusive and exclusive prices with different tax rates."
-          path="/gst-calculator"
-        />
-        
-        <ToolCard
-          icon="ri-ruler-2-fill"
-          title="Unit Converter"
-          description="Convert between different units of measurement including length, weight, volume, and temperature."
-          path="/unit-converter"
-        />
-        
-        <ToolCard
-          icon="ri-calendar-event-fill"
-          title="Date Calculator"
-          description="Calculate the difference between dates or add/subtract days, weeks, or months from a specific date."
-          path="/date-calculator"
-        />
-        
-        <ToolCard
-          icon="ri-price-tag-3-fill"
-          title="Discount Calculator"
-          description="Calculate sale prices and savings when applying various discounts."
-          path="/discount-calculator"
-        />
-        
-        <ToolCard
-          icon="ri-money-dollar-circle-fill"
-          title="SIP Calculator"
-          description="Calculate how your systematic investments can grow over time with the power of compounding."
-          path="/sip-calculator"
-        />
-        
-        <ToolCard
-          icon="ri-heart-pulse-fill"
-          title="BMI Calculator"
-          description="Calculate your Body Mass Index and check if your weight is in a healthy range for your height."
-          path="/bmi-calculator"
-        />
-
-      </div>
-      
-      <div className="text-center mb-8">
-        <Link href="/">
-          <div className="inline-flex items-center justify-center px-4 py-2 bg-[#4338ca] text-white rounded-md hover:bg-[#3730a3] transition-colors cursor-pointer">
-            <i className="ri-arrow-left-fill mr-2"></i> Back to Percentage Calculator
+      <div className="container mx-auto px-4 max-w-6xl">
+        <header className="text-center mb-16 animate-slide-up">
+          <div className="inline-flex items-center justify-center px-4 py-1.5 mb-4 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-primary text-sm font-medium">
+            <i className="ri-apps-2-line mr-2"></i> Toolbox
           </div>
-        </Link>
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4">
+            Explore All <span className="text-gradient">Tools</span>
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-light text-lg">
+            A premium suite of calculators designed for speed, accuracy, and beauty.
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <ToolCard 
+            title="GST Calculator" 
+            description="Add or remove GST from any amount instantly with standard rates." 
+            path="/gst-calculator" 
+            icon="ri-receipt-line"
+            colorClass="bg-blue-500"
+          />
+          <ToolCard 
+            title="Loan & EMI" 
+            description="Calculate your monthly EMI, total interest and total payment for any loan." 
+            path="/loan-calculator" 
+            icon="ri-bank-card-line"
+            colorClass="bg-purple-500"
+          />
+          <ToolCard 
+            title="Profit & Loss" 
+            description="Determine profit or loss amounts and percentages based on cost and selling price." 
+            path="/profit-loss-calculator" 
+            icon="ri-line-chart-line"
+            colorClass="bg-emerald-500"
+          />
+          <ToolCard 
+            title="Date Calculator" 
+            description="Find the exact duration between two dates or calculate age in years, months and days." 
+            path="/date-calculator" 
+            icon="ri-calendar-event-line"
+            colorClass="bg-orange-500"
+          />
+          <ToolCard 
+            title="Discount Calculator" 
+            description="Calculate the final price after discount and see exactly how much you save." 
+            path="/discount-calculator" 
+            icon="ri-price-tag-3-line"
+            colorClass="bg-rose-500"
+          />
+          <ToolCard 
+            title="Unit Converter" 
+            description="Convert between various units of length, weight, temperature, and volume." 
+            path="/unit-converter" 
+            icon="ri-exchange-box-line"
+            colorClass="bg-cyan-500"
+          />
+          <ToolCard 
+            title="SIP Calculator" 
+            description="Plan your mutual fund investments and calculate potential returns via SIP." 
+            path="/sip-calculator" 
+            icon="ri-funds-line"
+            colorClass="bg-indigo-500"
+          />
+          <ToolCard 
+            title="BMI Calculator" 
+            description="Check your Body Mass Index and see if your weight falls within a healthy range." 
+            path="/bmi-calculator" 
+            icon="ri-heart-pulse-line"
+            colorClass="bg-red-500"
+          />
+        </div>
       </div>
-    </div>
     </>
   );
 }

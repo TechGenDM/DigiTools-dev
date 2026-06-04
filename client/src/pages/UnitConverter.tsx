@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "wouter";
 import SEOHead from "@/components/SEOHead";
 
-// Define conversion unit types
 type Category = "length" | "weight" | "temperature" | "volume";
 type Unit = string;
 
-// Define the conversion data structure
 interface ConversionCategory {
   name: string;
   units: {
     [key: string]: {
       label: string;
-      conversion: number;  // Factor to convert to base unit (first unit in the list)
+      conversion: number;
     };
   };
 }
 
 const UnitConverter: React.FC = () => {
-  // Conversion data for all categories
   const conversionData: { [key in Category]: ConversionCategory } = {
     length: {
       name: "Length",
@@ -58,7 +54,6 @@ const UnitConverter: React.FC = () => {
     }
   };
 
-  // State for user inputs
   const [category, setCategory] = useState<Category>("length");
   const [fromUnit, setFromUnit] = useState<Unit>("");
   const [toUnit, setToUnit] = useState<Unit>("");
@@ -67,17 +62,15 @@ const UnitConverter: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [unitExplanation, setUnitExplanation] = useState<string>("");
 
-  // Initialize default units on category change
   useEffect(() => {
     const unitKeys = Object.keys(conversionData[category].units);
     setFromUnit(unitKeys[0]);
     setToUnit(unitKeys[1]);
-    setInputValue(""); // Reset input when category changes
+    setInputValue("");
     setResult(null);
     setUnitExplanation("");
   }, [category]);
 
-  // Convert units when inputs change
   useEffect(() => {
     if (fromUnit && toUnit && inputValue !== "") {
       convertValue();
@@ -87,10 +80,8 @@ const UnitConverter: React.FC = () => {
     }
   }, [category, fromUnit, toUnit, inputValue]);
 
-  // Function to handle unit conversion
   const convertValue = () => {
     setError("");
-    
     const value = parseFloat(inputValue);
     
     if (isNaN(value)) {
@@ -102,16 +93,11 @@ const UnitConverter: React.FC = () => {
 
     try {
       let convertedValue: number;
-      
-      // Temperature conversions require special formulas
       if (category === "temperature") {
         convertedValue = convertTemperature(value, fromUnit, toUnit);
       } else {
-        // Standard conversion for other categories
         const fromFactor = conversionData[category].units[fromUnit].conversion;
         const toFactor = conversionData[category].units[toUnit].conversion;
-        
-        // Convert to base unit then to target unit
         const valueInBaseUnit = value * fromFactor;
         convertedValue = valueInBaseUnit / toFactor;
       }
@@ -125,30 +111,17 @@ const UnitConverter: React.FC = () => {
     }
   };
 
-  // Function to handle temperature conversions
   const convertTemperature = (value: number, from: Unit, to: Unit): number => {
-    // Convert to Celsius first (as base unit)
     let celsius: number;
+    if (from === "celsius") celsius = value;
+    else if (from === "fahrenheit") celsius = (value - 32) * (5/9);
+    else celsius = value - 273.15;
     
-    if (from === "celsius") {
-      celsius = value;
-    } else if (from === "fahrenheit") {
-      celsius = (value - 32) * (5/9);
-    } else { // kelvin
-      celsius = value - 273.15;
-    }
-    
-    // Convert from Celsius to target unit
-    if (to === "celsius") {
-      return celsius;
-    } else if (to === "fahrenheit") {
-      return (celsius * (9/5)) + 32;
-    } else { // kelvin
-      return celsius + 273.15;
-    }
+    if (to === "celsius") return celsius;
+    else if (to === "fahrenheit") return (celsius * (9/5)) + 32;
+    else return celsius + 273.15;
   };
 
-  // Create explanation of the conversion
   const createUnitExplanation = (value: number, from: Unit, to: Unit, result: number) => {
     if (category === "temperature") {
       setUnitExplanation(`Temperature conversion uses specific formulas, not a simple ratio.`);
@@ -160,7 +133,6 @@ const UnitConverter: React.FC = () => {
     }
   };
 
-  // Function to reset all inputs
   const resetConverter = () => {
     setInputValue("");
     const unitKeys = Object.keys(conversionData[category].units);
@@ -171,30 +143,27 @@ const UnitConverter: React.FC = () => {
     setUnitExplanation("");
   };
 
-  // Function to swap from and to units
   const swapUnits = () => {
     const temp = fromUnit;
     setFromUnit(toUnit);
     setToUnit(temp);
   };
 
-  // Format result for display with appropriate precision
   const formatResult = (value: number): string => {
-    if (category === "temperature") {
-      // Temperature typically shown with 1-2 decimal places
-      return value.toFixed(2);
-    } else if (value === Math.floor(value)) {
-      // Whole numbers don't need decimals
-      return value.toString();
-    } else if (value < 0.001 || value > 10000) {
-      // Scientific notation for very small or large numbers
-      return value.toExponential(6);
-    } else if (value < 0.1) {
-      // More precision for small values
-      return value.toFixed(6);
-    } else {
-      // Standard precision
-      return value.toFixed(4);
+    if (category === "temperature") return value.toFixed(2);
+    if (value === Math.floor(value)) return value.toString();
+    if (value < 0.001 || value > 10000) return value.toExponential(6);
+    if (value < 0.1) return value.toFixed(6);
+    return value.toFixed(4);
+  };
+
+  const getCategoryColor = (cat: string) => {
+    switch (cat) {
+      case "length": return "from-blue-500/20 to-cyan-500/20 text-cyan-600 dark:text-cyan-400 border-cyan-500/30";
+      case "weight": return "from-emerald-500/20 to-teal-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30";
+      case "temperature": return "from-orange-500/20 to-rose-500/20 text-orange-400 border-orange-500/30";
+      case "volume": return "from-purple-500/20 to-indigo-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30";
+      default: return "from-white/10 to-white/5 text-slate-900 dark:text-white border-white/10";
     }
   };
 
@@ -205,178 +174,155 @@ const UnitConverter: React.FC = () => {
         description="Convert between units of length, weight, temperature, and volume with precision. Free, instant, and easy to use."
         path="/unit-converter"
       />
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <header className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-[#4338ca] mb-2">
-          Universal Unit Converter
-        </h1>
-        <p className="text-slate-600 max-w-xl mx-auto">
-          Convert between different units of measurement with precision and ease.
-        </p>
-      </header>
-
-      {/* Breadcrumb Navigation */}
-      <div className="flex items-center text-sm mb-6 bg-slate-50 p-2 rounded-md">
-        <Link href="/">
-          <div className="text-[#4338ca] hover:underline cursor-pointer">Home</div>
-        </Link>
-        <i className="ri-arrow-right-s-line mx-2 text-slate-400"></i>
-        <span className="text-slate-700">Unit Converter</span>
-      </div>
-
-      {/* Converter Card */}
-      <div className="converter-card bg-white rounded-lg shadow-card p-6 mb-6">
-        <div className="space-y-6">
-          {/* Category Selection */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {Object.keys(conversionData).map((cat) => (
-              <button
-                key={cat}
-                className={`py-3 px-4 rounded-md transition-colors text-sm font-medium ${
-                  category === cat
-                    ? "bg-[#4338ca] text-white"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                }`}
-                onClick={() => setCategory(cat as Category)}
-              >
-                <i className={`
-                  ${cat === "length" ? "ri-ruler-2-fill" : 
-                    cat === "weight" ? "ri-scales-fill" : 
-                    cat === "temperature" ? "ri-temp-hot-fill" : 
-                    "ri-drop-fill"} mr-2
-                `}></i>
-                {conversionData[cat as Category].name}
-              </button>
-            ))}
+      <div className="container mx-auto px-4 max-w-4xl relative z-10">
+        <header className="text-center mb-12 animate-slide-up">
+          <div className="inline-flex items-center justify-center p-3 mb-4 rounded-full bg-cyan-500/20 text-cyan-400">
+            <i className="ri-arrow-left-right-fill text-3xl"></i>
           </div>
-          
-          {/* Conversion Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
-            <div className="md:col-span-2">
-              <label htmlFor="from-unit" className="block text-sm font-medium text-slate-700 mb-1">
-                From
-              </label>
-              <select
-                id="from-unit"
-                className="w-full px-4 py-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                value={fromUnit}
-                onChange={(e) => setFromUnit(e.target.value)}
-              >
-                {fromUnit && Object.keys(conversionData[category].units).map((unit) => (
-                  <option key={`from-${unit}`} value={unit}>
-                    {conversionData[category].units[unit].label}
-                  </option>
-                ))}
-              </select>
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-4 tracking-tight">
+            Unit <span className="text-gradient">Converter</span>
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400 font-light max-w-2xl mx-auto text-lg">
+            Convert between length, weight, temperature, and volume effortlessly.
+          </p>
+        </header>
+
+        <div className="glass-panel p-6 md:p-8 max-w-3xl mx-auto animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <div className="space-y-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {Object.keys(conversionData).map((cat) => (
+                <button
+                  key={cat}
+                  className={`py-3 px-4 rounded-xl transition-all duration-300 text-sm font-medium flex flex-col items-center justify-center gap-2 border ${
+                    category === cat
+                      ? `bg-gradient-to-br ${getCategoryColor(cat)} shadow-lg scale-105`
+                      : "bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-black/5 dark:border-white/5 hover:bg-black/10 dark:hover:bg-white/10 hover:text-white"
+                  }`}
+                  onClick={() => setCategory(cat as Category)}
+                >
+                  <i className={`text-xl
+                    ${cat === "length" ? "ri-ruler-2-fill" : 
+                      cat === "weight" ? "ri-scales-fill" : 
+                      cat === "temperature" ? "ri-temp-hot-fill" : 
+                      "ri-drop-fill"}
+                  `}></i>
+                  <span>{conversionData[cat as Category].name}</span>
+                </button>
+              ))}
             </div>
             
-            <div className="flex justify-center">
-              <button
-                onClick={swapUnits}
-                className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600"
-                title="Swap units"
-              >
-                <i className="ri-arrow-left-right-fill text-lg"></i>
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
+              <div className="md:col-span-5">
+                <label htmlFor="from-unit" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  From
+                </label>
+                <div className="relative">
+                  <select
+                    id="from-unit"
+                    className="glass-input w-full px-4 py-3 bg-transparent text-slate-900 dark:text-white appearance-none"
+                    value={fromUnit}
+                    onChange={(e) => setFromUnit(e.target.value)}
+                  >
+                    {fromUnit && Object.keys(conversionData[category].units).map((unit) => (
+                      <option key={`from-${unit}`} value={unit} className="bg-slate-900 text-white">
+                        {conversionData[category].units[unit].label}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                    <i className="ri-arrow-down-s-line"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-center md:col-span-1 pt-6 md:pt-0">
+                <button
+                  onClick={swapUnits}
+                  className="p-3 rounded-full bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-slate-900 dark:text-white transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                  title="Swap units"
+                >
+                  <i className="ri-arrow-left-right-line text-lg"></i>
+                </button>
+              </div>
+              
+              <div className="md:col-span-5">
+                <label htmlFor="to-unit" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  To
+                </label>
+                <div className="relative">
+                  <select
+                    id="to-unit"
+                    className="glass-input w-full px-4 py-3 bg-transparent text-slate-900 dark:text-white appearance-none"
+                    value={toUnit}
+                    onChange={(e) => setToUnit(e.target.value)}
+                  >
+                    {toUnit && Object.keys(conversionData[category].units).map((unit) => (
+                      <option key={`to-${unit}`} value={unit} className="bg-slate-900 text-white">
+                        {conversionData[category].units[unit].label}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                    <i className="ri-arrow-down-s-line"></i>
+                  </div>
+                </div>
+              </div>
             </div>
             
-            <div className="md:col-span-2">
-              <label htmlFor="to-unit" className="block text-sm font-medium text-slate-700 mb-1">
-                To
-              </label>
-              <select
-                id="to-unit"
-                className="w-full px-4 py-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                value={toUnit}
-                onChange={(e) => setToUnit(e.target.value)}
-              >
-                {toUnit && Object.keys(conversionData[category].units).map((unit) => (
-                  <option key={`to-${unit}`} value={unit}>
-                    {conversionData[category].units[unit].label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          
-          {/* Input Value */}
-          <div className="grid grid-cols-1 gap-4">
-            <div className="form-group">
-              <label htmlFor="input-value" className="block text-sm font-medium text-slate-700 mb-1">
-                Enter Value
+            <div className="form-group pt-4 border-t border-white/5">
+              <label htmlFor="input-value" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 text-center">
+                Enter Value to Convert
               </label>
               <input
                 type="number"
                 id="input-value"
-                className="w-full px-4 py-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder={`Enter value in ${fromUnit && fromUnit in conversionData[category].units ? 
-                  conversionData[category].units[fromUnit].label.split(' ')[0] : 'selected unit'}`}
+                className="glass-input w-full px-4 py-4 bg-transparent text-center text-2xl font-bold font-display"
+                placeholder="0.00"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 step="any"
               />
             </div>
-          </div>
-          
-          {/* Error Message */}
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <i className="ri-error-warning-fill text-red-400"></i>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-red-700">{error}</p>
-                </div>
+            
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/50 p-4 rounded-xl flex items-center">
+                <i className="ri-error-warning-fill text-red-400 text-xl mr-3"></i>
+                <p className="text-sm text-red-200">{error}</p>
               </div>
-            </div>
-          )}
-          
-          {/* Results Section */}
-          {result !== null && (
-            <div className="result-box bg-gradient-to-r from-indigo-50 to-blue-50 p-5 rounded-md border border-indigo-100 animate-in slide-in-from-bottom duration-300">
-              <h3 className="font-semibold text-lg text-[#4338ca] mb-4">
-                Conversion Result
-              </h3>
-              
-              <div className="bg-white p-4 rounded-md shadow-sm mb-3">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p className="text-sm text-slate-500 mb-1">
-                      {inputValue} {fromUnit && fromUnit in conversionData[category].units ? 
-                        conversionData[category].units[fromUnit].label.split(' ')[0] : ''}
-                    </p>
-                    <div className="flex items-center">
-                      <i className="ri-arrow-right-line text-[#4338ca] mr-2"></i>
-                      <p className="text-2xl font-bold text-[#4338ca]">
-                        {formatResult(result)} {toUnit && toUnit in conversionData[category].units ? 
-                          conversionData[category].units[toUnit].label.split(' ')[0] : ''}
-                      </p>
-                    </div>
+            )}
+            
+            {result !== null && (
+              <div className={`bg-gradient-to-br ${getCategoryColor(category)} p-6 rounded-2xl animate-in fade-in duration-300 text-center shadow-lg backdrop-blur-md`}>
+                <p className="text-sm opacity-80 mb-2 font-medium tracking-wide">Conversion Result</p>
+                <div className="flex flex-col items-center justify-center">
+                  <p className="text-4xl font-display font-bold text-slate-900 dark:text-white drop-shadow-md break-all">
+                    {formatResult(result)}
+                  </p>
+                  <p className="text-lg opacity-90 mt-1">
+                    {toUnit && toUnit in conversionData[category].units ? 
+                      conversionData[category].units[toUnit].label : ''}
+                  </p>
+                </div>
+                
+                {unitExplanation && (
+                  <div className="mt-4 pt-3 border-t border-black/20 dark:border-white/20 text-xs font-medium opacity-80">
+                    {unitExplanation}
                   </div>
-                </div>
+                )}
               </div>
-              
-              {unitExplanation && (
-                <div className="text-xs text-slate-600 bg-white p-3 rounded-md">
-                  <p>{unitExplanation}</p>
-                </div>
-              )}
+            )}
+            
+            <div className="flex justify-end pt-2">
+              <button 
+                onClick={resetConverter}
+                className="px-6 py-2.5 text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-slate-900 dark:text-white border border-black/10 dark:border-white/10 rounded-xl transition-all"
+              >
+                <i className="ri-refresh-line mr-2"></i> Reset
+              </button>
             </div>
-          )}
-          
-          {/* Reset Button */}
-          <div className="flex justify-end">
-            <button 
-              onClick={resetConverter}
-              className="px-4 py-2 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 rounded transition-colors"
-            >
-              <i className="ri-refresh-fill mr-1"></i> Reset
-            </button>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 };
